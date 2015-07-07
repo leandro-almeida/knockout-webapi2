@@ -1,0 +1,116 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>ToDo KnockoutJS + WebApi2</title>
+</head>
+<body>
+    <h1>Exemplo: ToDo KnockoutJS + WebApi2</h1>
+
+    <div data-bind="with: tarefaFormViewModel">
+        <form id="formTodo">
+            Idx: <span data-bind="text: idx"></span><br />
+            Id: <span data-bind="text: id"></span><br/>
+            Tarefa a fazer: <input type="text" data-bind="textInput: nome" /><br />
+            <button data-bind="enable: exibirBotaoSalvar(), click: saveTodo">Salvar</button>
+        </form>
+    </div>
+
+    <hr/>
+
+    <div data-bind="with: tarefaListViewModel">
+        <table>
+            <tr><th>Id</th><th>Nome</th><th>Ação</th></tr>
+
+            <tbody data-bind="foreach: listaObjetos">
+                <tr>
+                    <td data-bind="text: id"></td>
+                    <td><a href="#" data-bind="click: $parent.editTodo($data, $index())"><span data-bind="text: nome"></span></a></td>
+                    <td><a href="#" data-bind="click: $parent.removeTodo">[x] del</a></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <script src="../Scripts/jquery-2.1.4.min.js"></script>
+    <script src="../Scripts/knockout-3.3.0.debug.js"></script>
+    
+    <script type="text/javascript">
+
+        function Tarefa(pId, pNome) {
+            var self = this;
+            var lastId = 0;
+
+            // atributos
+            self.idx = ko.observable();
+            self.id = ko.observable(pId);
+            self.nome = ko.observable(pNome);
+
+            // funcoes
+            self.saveTodo = function (obj) {
+                //console.log(obj);
+
+                if (self.id() == null || self.id() == undefined || self.id() === 0) {
+                    console.log("novo elemento: ", obj);
+                    // cria novo objeto da entidade adiciona ao array
+                    var novaTarefa = new Tarefa(++lastId, self.nome());
+                    viewModel.tarefaListViewModel.listaObjetos.push(novaTarefa);
+
+                } else {
+
+                    console.log("atualizando: ", self.idx(), self.nome());
+                    viewModel.tarefaListViewModel.listaObjetos.replace( viewModel.tarefaListViewModel.listaObjetos()[self.idx()] , new Tarefa(self.id(), self.nome()));
+                    console.log("elemento atualizado, id:", self.id());
+                }
+                
+                // limpa nome apos adicionar
+                self.limpar();
+                $(":input:first").focus();
+            };
+
+            self.exibirBotaoSalvar = function () {
+                return self.nome() != null && self.nome().length > 0;
+            };
+
+            self.limpar = function () {
+                self.idx(null);
+                self.id(null);
+                self.nome('');
+            };
+        }
+
+        function TarefaList() {
+            var self = this;
+            
+            // lista
+            self.listaObjetos = ko.observableArray([]);
+
+            self.removeTodo = function (obj) {
+                console.log("remove: ", obj);
+                self.listaObjetos.remove(obj);
+                viewModel.tarefaFormViewModel.limpar();
+                $(":input:first").focus();
+            };
+
+            self.editTodo = function (obj, idx) {
+                console.log("edit: ", idx, obj);
+
+                viewModel.tarefaFormViewModel.idx(idx);
+                viewModel.tarefaFormViewModel.id(obj.id());
+                viewModel.tarefaFormViewModel.nome(obj.nome());
+
+                $(":input:first").focus();
+            };
+        }
+
+        var viewModel = {
+            tarefaFormViewModel: new Tarefa(),
+            tarefaListViewModel: new TarefaList()
+        };
+
+        $(document).ready(function () {
+            ko.applyBindings(viewModel);
+            $(":input:first").focus();
+        });
+    </script>
+</body>
+</html>
