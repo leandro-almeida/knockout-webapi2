@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>KnockoutJS + C#.NET WebApi 2</title>
     <link rel="stylesheet" type="text/css" href="../Content/bootstrap.min.css" />
+    <link rel="stylesheet" type="text/css" href="../Content/bootstrap.custom.css" />
     <link rel="stylesheet" type="text/css" href="../Content/Site.css" />
 </head>
 <body>
@@ -32,68 +33,85 @@
     <div class="container body-content">
 
         <!-- Conteudo -->
-
-        <!-- Cabeçalho da tela -->
         <div class="page-header">
+            <h1>Subcontas <small>- exemplo -</small></h1>
+
             <!-- Caminho do pão (breadcrumb) -->
             <ol class="breadcrumb">
                 <li><a href="/Home/Index">Início</a></li>
                 <li class="active">Subcontas</li>
             </ol>
-
-            <!-- Titulo da Tela-->
-            <h1>Subcontas <small>- exemplo -</small></h1>
         </div>
 
         <!-- Formulario principal: pesquisa + resultado -->
         <div class="panel panel-primary">
 
             <!-- Default panel contents -->
-            <div class="panel-heading">Informe apenas UM dos campos abaixo</div>
+            <div class="panel-heading">Informe apenas UM dos campos abaixo para pesquisa...</div>
             <div class="panel-body">
 
-                <form class="form-inline">
+                <form id="formPesquisaSubconta" class="form-inline" data-bind="submit: GetSubcontas">
                     <div class="form-group">
                         <label for="inputSubconta">Subconta</label>
-                        <input type="text" class="form-control" id="inputSubconta" placeholder="__________" style="width: 120px;" maxlength="10">
+                        <input type="text" class="form-control" id="inputSubconta" placeholder="__________" style="width: 120px;" maxlength="10" data-bind="textInput: pSubconta">
                     </div>
                     <div class="form-group">
                         <label for="inputProcesso">Processo</label>
-                        <input type="text" class="form-control" id="inputProcesso" placeholder="____________________" style="width: 200px;" maxlength="20">
+                        <input type="text" class="form-control" id="inputProcesso" placeholder="____________________" style="width: 200px;" maxlength="20" data-bind="textInput: pProcesso">
                     </div>
                     <div class="form-group">
                         <label for="inputTitular">Nome Titular</label>
-                        <input type="text" class="form-control" id="inputTitular" placeholder="Até 100 caracteres..." maxlength="100">
+                        <input type="text" class="form-control" id="inputTitular" placeholder="Até 100 caracteres..." maxlength="100" data-bind="textInput: pTitular">
                     </div>
 
-                    <button type="button" class="btn btn-primary btn-lg" aria-label="Left Align">
+                    <button type="button" id="botaoPesquisarSubconta" class="btn btn-primary" data-bind="click: GetSubcontas, enable: ExibirBotaoPesquisar()">
                         <span class="glyphicon glyphicon-search" aria-hidden="true"></span> Pesquisar
+                    </button>
+
+                    <button type="button" id="botaoPesquisarSubconta" class="btn btn-default" data-bind="click: LimparCampos">
+                        <span class="glyphicon glyphicon-erase" aria-hidden="true"></span> Limpar
                     </button>
                 </form>
 
             </div>
+
             <!-- Table -->
-            <div class="well well-sm">
-                Resultado: <span class="badge">0</span> subconta(s) encontradas.
-            </div>
-            
+            <div data-bind="fadeVisible: exibirPainelResultado()">
+                <div class="alert alert-info">
+                    Resultado: <span class="badge badge-inverse" data-bind="text: listaSubcontas().length"></span> subconta(s) encontradas.
+                </div>
 
-            <table class="table table-bordered table-striped table-hover">
-                <tr>
-                    <th>Nº Subconta</th>
-                    <th>Saldo</th>
-                    <th>Data Abertura</th>
-                    <th>Processo</th>
-                    <th>Titular</th>
-                </tr>
-            </table>
+                <table class="table table-bordered table-striped table-hover">
+                    <tr>
+                        <th>Nº Subconta</th>
+                        <th>Saldo</th>
+                        <th>Data Abertura</th>
+                        <th>Processo</th>
+                        <th>Titular</th>
+                        <th>Ação</th>
+                    </tr>
 
-            <nav>
-                <ul class="pager">
-                    <li><a href="#">Anterior</a></li>
-                    <li><a href="#">Próximo</a></li>
-                </ul>
-            </nav>
+                    <tbody data-bind="foreach: listaSubcontas">
+                        <tr>
+                            <td data-bind="text: numeroSubconta"></td>
+                            <td data-bind="text: saldoFormatado"></td>
+                            <td data-bind="text: dataFormatada"></td>
+                            <td data-bind="text: numeroProcesso"></td>
+                            <td data-bind="text: titular"></td>
+                            <td><a href="#" title="Ver Movimentações"><span class="glyphicon glyphicon-list-alt" aria-hidden="true"></span></a></td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <nav>
+                    <ul class="pager">
+                        <li><a href="#">Anterior</a></li>
+                        <li><a href="#">Próximo</a></li>
+                    </ul>
+                </nav>
+
+            </div> <!-- fim if -->
+
         </div>
 
 
@@ -110,13 +128,125 @@
     <script src="../Scripts/knockout-3.3.0.debug.js" type="text/javascript"></script>
 
     <script type="text/javascript">
-        function Subconta() {
+        /*
+        * Parametro: objeto javascript simples com os atributos da subconta:
+        *    var subconta = {
+        *        id: <id>,
+        *        numeroSubconta: "<nrSubconta>",
+        *        numeroProcesso: "<nrProcesso>",
+        *        titular: "<nomeTitular>",
+        *        dataAbertura: "<data>",
+        *        saldo: <valorSaldo>
+        *    };
+        */
+        function Subconta(pSubconta) {
+            var self = this;
+            self.id = ko.observable(pSubconta.id);
+            self.numeroSubconta = ko.observable(pSubconta.numeroSubconta);
+            self.numeroProcesso = ko.observable(pSubconta.numeroProcesso);
+            self.titular = ko.observable(pSubconta.titular);
+            self.dataAbertura = ko.observable(pSubconta.dataAbertura);
+            self.saldo = ko.observable(pSubconta.saldo);
 
+            self.dataFormatada = ko.computed(function () {
+                return new Date(self.dataAbertura()).toLocaleString();
+            });
+
+            self.saldoFormatado = ko.computed(function () {
+                return new Number(self.saldo()).toFixed(2);
+            });
         }
 
+        /*
+        * Objeto que representa o View-Model desta tela.
+        */
         function SubcontaViewModel() {
+            var self = this;
+
+            // campos de pesquisa
+            self.pSubconta = ko.observable();
+            self.pProcesso = ko.observable();
+            self.pTitular = ko.observable();
+            self.exibirPainelResultado = ko.observable(false);
+
+            // lista de objetos retornados do servidor
+            self.listaSubcontas = ko.observableArray([]);
+
+            // pesquisa subcontas no SubcontasController
+            self.GetSubcontas = function (obj) {
+
+                // Essa verificação nao seria necessaria devido ao botao estar desabilitado, mas para garantir...
+                /*
+                if (!obj.pSubconta || !obj.pProcesso || !obj.pTitular) {
+                    // Melhorar alerta com component bootstrap
+                    alert("Preencha um dos campos de pesquisa!");
+                    return;
+                }
+                */
+
+                var params = {
+                    numeroSubconta: obj.pSubconta() || null,
+                    numeroProcesso: obj.pProcesso() || null,
+                    titular: obj.pTitular() || null
+                };
+
+                // realiza chamada ajax
+                // TODO: mudar url do browser com os parametros de pesquisa (Sammy plugin?): 
+                // /api/Subconta/#?numeroSubconta=''&numeroProcesso=''.....
+
+                $.ajax('/api/Subconta/',
+                    {
+                        method: 'GET',
+                        dataType: "json",
+                        data: JSON.stringify(params),
+                        beforeSend: function () {
+                            self.exibirPainelResultado(false);
+                            // exibir ajax loading
+                        },
+                        success: function(data) {
+                            console.log(data);
+                            self.listaSubcontas.removeAll();
+
+                            var mappedData = ko.utils.arrayMap(data, function (item) {
+                                return new Subconta(item);
+                            });
+                            console.log(mappedData);
+
+                            self.listaSubcontas.push.apply(self.listaSubcontas, mappedData);
+                        },
+                        complete: function () {
+                            self.exibirPainelResultado(true);
+                            // esconder ajax loading
+                        }
+                    });
+            };
+
+            self.LimparCampos = function () {
+                self.pSubconta('');
+                self.pProcesso('');
+                self.pTitular('');
+                self.exibirPainelResultado(false);
+            };
+
+            // Função auxiliar para informar se deve habilitar botao pesquisar
+            self.ExibirBotaoPesquisar = function () {
+                return (self.pSubconta() || self.pProcesso() || self.pTitular());
+            };
 
         }
+
+        ko.bindingHandlers.fadeVisible = {
+            init: function (element, valueAccessor) {
+                // Initially set the element to be instantly visible/hidden depending on the value
+                var value = valueAccessor();
+                $(element).toggle(ko.unwrap(value)); // Use "unwrapObservable" so we can handle values that may or may not be observable
+            },
+            update: function (element, valueAccessor) {
+                // Whenever the value subsequently changes, slowly fade the element in or out
+                var value = valueAccessor();
+                ko.unwrap(value) ? $(element).fadeIn() : $(element).fadeOut();
+            }
+        };
 
         $(document).ready(function () {
             ko.applyBindings(new SubcontaViewModel());

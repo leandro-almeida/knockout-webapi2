@@ -12,6 +12,6 @@ namespace KnockoutJS_WebApi2.Models
         public string numeroProcesso { get; set; }
         public string titular { get; set; }
         public DateTime dataAbertura { get; set; }
-        public Movimentacao[] movimentacoes { get; set; }
+        public decimal saldo { get; set; }
     }
 }

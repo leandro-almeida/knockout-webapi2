@@ -19,8 +19,8 @@ namespace KnockoutJS_WebApi2.Repository
             listaSubcontas = new List<Subconta>();
 
             // Subcontas fake
-            var s1 = new Subconta { id = 1, numeroSubconta = "20151110001", numeroProcesso = "NNNNNNN-DD.2015.8.14.O3O1", titular = "Xico da Silva Boy 2015", dataAbertura = DateTime.Today };
-            var s2 = new Subconta { id = 2, numeroSubconta = "20141110001", numeroProcesso = "NNNNNNN-DD.2014.8.14.O3O1", titular = "Xico da Silva Boy 2014", dataAbertura = DateTime.Today.AddYears(-1) };
+            var s1 = new Subconta { id = 1, numeroSubconta = "20151110001", numeroProcesso = "NNNNNNN-DD.2015.8.14.O3O1", titular = "Xico da Silva Boy 2015", saldo = 2500M, dataAbertura = DateTime.Today };
+            var s2 = new Subconta { id = 2, numeroSubconta = "20141110001", numeroProcesso = "NNNNNNN-DD.2014.8.14.O3O1", titular = "Xico da Silva Boy 2014", saldo = 20000000M, dataAbertura = DateTime.Today.AddYears(-1) };
             
             // Adiciona objetos
             listaSubcontas.Add(s1);
@@ -68,6 +68,12 @@ namespace KnockoutJS_WebApi2.Repository
             Subconta s = listaSubcontas.FirstOrDefault(f => f.id == id);
             if (s != null)
                 listaSubcontas.Remove(s);
+        }
+
+        public static IList<Subconta> ObterPorParametros(string numeroSubconta, string numeroProcesso, string titular)
+        {
+            // todo
+            return listaSubcontas;
         }
     }
 }

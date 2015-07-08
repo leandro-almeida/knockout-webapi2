@@ -20,11 +20,18 @@ namespace KnockoutJS_WebApi2.Controllers
             return SubcontaRepository.ObterTodos();
         }
 
-        // GET: api/Subconta/5
+        // GET: api/Subconta/id
         [HttpGet]
         public Subconta Get(int id)
         {
             return SubcontaRepository.ObterPorId(id);
+        }
+
+        // GET: api/Subconta/?params
+        [HttpGet]
+        public IList<Subconta> Get([FromUri]string numeroSubconta, [FromUri]string numeroProcesso, [FromUri]string titular)
+        {
+            return SubcontaRepository.ObterPorParametros(numeroSubconta, numeroProcesso, titular);
         }
 
         // POST: api/Subconta
