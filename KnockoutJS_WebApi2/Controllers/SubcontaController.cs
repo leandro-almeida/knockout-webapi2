@@ -1,11 +1,6 @@
 ﻿using KnockoutJS_WebApi2.Models;
 using KnockoutJS_WebApi2.Repository;
-using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
 using System.Web.Http;
 
 namespace KnockoutJS_WebApi2.Controllers
@@ -27,11 +22,15 @@ namespace KnockoutJS_WebApi2.Controllers
             return SubcontaRepository.ObterPorId(id);
         }
 
-        // GET: api/Subconta/?params
+        // GET: api/Subconta/
         [HttpGet]
-        public IList<Subconta> Get([FromUri]string numeroSubconta, [FromUri]string numeroProcesso, [FromUri]string titular)
+        [Route("api/Subconta/{subconta}/{processo?}/{titular}")]
+        public IList<Subconta> Get(string subconta, string processo, string titular)
         {
-            return SubcontaRepository.ObterPorParametros(numeroSubconta, numeroProcesso, titular);
+            // 1 param: subconta ou processo ou titular
+            // 2 params: subconta/processo
+            // subconta / processo / titular
+            return SubcontaRepository.ObterPorParametros(subconta, processo, titular);
         }
 
         // POST: api/Subconta

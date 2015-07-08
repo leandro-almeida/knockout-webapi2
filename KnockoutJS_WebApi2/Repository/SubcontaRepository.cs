@@ -73,6 +73,7 @@ namespace KnockoutJS_WebApi2.Repository
         public static IList<Subconta> ObterPorParametros(string numeroSubconta, string numeroProcesso, string titular)
         {
             // todo
+            VerificarLista();
             return listaSubcontas;
         }
     }

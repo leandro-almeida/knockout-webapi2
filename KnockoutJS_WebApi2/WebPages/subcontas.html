@@ -64,7 +64,7 @@
                         <input type="text" class="form-control" id="inputTitular" placeholder="Até 100 caracteres..." maxlength="100" data-bind="textInput: pTitular">
                     </div>
 
-                    <button type="button" id="botaoPesquisarSubconta" class="btn btn-primary" data-bind="click: GetSubcontas, enable: ExibirBotaoPesquisar()">
+                    <button type="button" id="botaoPesquisarSubconta" class="btn btn-primary" data-bind="click: GetSubcontas, enable: isExibirBotaoPesquisar()">
                         <span class="glyphicon glyphicon-search" aria-hidden="true"></span> Pesquisar
                     </button>
 
@@ -76,7 +76,7 @@
             </div>
 
             <!-- Table -->
-            <div data-bind="fadeVisible: exibirPainelResultado()">
+            <div data-bind="fadeVisible: isExibirPainelResultado()">
                 <div class="alert alert-info">
                     Resultado: <span class="badge badge-inverse" data-bind="text: listaSubcontas().length"></span> subconta(s) encontradas.
                 </div>
@@ -164,10 +164,10 @@
             var self = this;
 
             // campos de pesquisa
-            self.pSubconta = ko.observable();
-            self.pProcesso = ko.observable();
-            self.pTitular = ko.observable();
-            self.exibirPainelResultado = ko.observable(false);
+            self.pSubconta = ko.observable('');
+            self.pProcesso = ko.observable('');
+            self.pTitular = ko.observable('');
+            self.boolExibirPainelResultado = ko.observable(false);
 
             // lista de objetos retornados do servidor
             self.listaSubcontas = ko.observableArray([]);
@@ -175,47 +175,38 @@
             // pesquisa subcontas no SubcontasController
             self.GetSubcontas = function (obj) {
 
-                // Essa verificação nao seria necessaria devido ao botao estar desabilitado, mas para garantir...
-                /*
-                if (!obj.pSubconta || !obj.pProcesso || !obj.pTitular) {
-                    // Melhorar alerta com component bootstrap
-                    alert("Preencha um dos campos de pesquisa!");
-                    return;
-                }
-                */
-
-                var params = {
-                    numeroSubconta: obj.pSubconta() || null,
-                    numeroProcesso: obj.pProcesso() || null,
-                    titular: obj.pTitular() || null
-                };
-
+                var p1 = (obj.pSubconta().length == 0 ? "''" : obj.pSubconta()) + '/';
+                var p2 = (obj.pProcesso().length == 0 ? "''" : obj.pProcesso()) + '/';
+                var p3 = (obj.pTitular().length == 0 ? "''" : obj.pTitular());
+                
                 // realiza chamada ajax
-                // TODO: mudar url do browser com os parametros de pesquisa (Sammy plugin?): 
-                // /api/Subconta/#?numeroSubconta=''&numeroProcesso=''.....
-
-                $.ajax('/api/Subconta/',
+                // TODO: mudar url do browser com os parametros de pesquisa (Sammy plugin?) 
+                console.log('/api/Subconta/' + p1 + p2 + p3);
+                location.hash = p1 + p2 + p3;
+                
+                $.ajax('/api/Subconta/' + p1 + p2 + p3,
                     {
                         method: 'GET',
                         dataType: "json",
-                        data: JSON.stringify(params),
+                        data: {},
                         beforeSend: function () {
-                            self.exibirPainelResultado(false);
+                            self.boolExibirPainelResultado(false);
+                            self.listaSubcontas([]);
                             // exibir ajax loading
                         },
-                        success: function(data) {
-                            console.log(data);
-                            self.listaSubcontas.removeAll();
 
+                        success: function(data) {
+                            
                             var mappedData = ko.utils.arrayMap(data, function (item) {
                                 return new Subconta(item);
                             });
-                            console.log(mappedData);
-
-                            self.listaSubcontas.push.apply(self.listaSubcontas, mappedData);
+                            
+                            //self.listaSubcontas.push.apply(self.listaSubcontas, mappedData);
+                            self.listaSubcontas(mappedData);
                         },
+
                         complete: function () {
-                            self.exibirPainelResultado(true);
+                            self.boolExibirPainelResultado(true);
                             // esconder ajax loading
                         }
                     });
@@ -225,16 +216,21 @@
                 self.pSubconta('');
                 self.pProcesso('');
                 self.pTitular('');
-                self.exibirPainelResultado(false);
+                self.listaSubcontas([]);
+                self.boolExibirPainelResultado(false);
             };
 
             // Função auxiliar para informar se deve habilitar botao pesquisar
-            self.ExibirBotaoPesquisar = function () {
+            self.isExibirBotaoPesquisar = function () {
                 return (self.pSubconta() || self.pProcesso() || self.pTitular());
             };
 
+            self.isExibirPainelResultado = function () {
+                return self.boolExibirPainelResultado();
+            };
         }
 
+        // Efeito de FadeIn/FadeOut do jQuery associado ao data-bind 'fadeVisible'
         ko.bindingHandlers.fadeVisible = {
             init: function (element, valueAccessor) {
                 // Initially set the element to be instantly visible/hidden depending on the value
