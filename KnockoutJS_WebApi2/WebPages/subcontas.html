@@ -1,0 +1,127 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>KnockoutJS + C#.NET WebApi 2</title>
+    <link rel="stylesheet" type="text/css" href="../Content/bootstrap.min.css" />
+    <link rel="stylesheet" type="text/css" href="../Content/Site.css" />
+</head>
+<body>
+    <div class="navbar navbar-inverse navbar-fixed-top">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a href="/Home/Index" class="navbar-brand">SDJ Gestor</a>
+            </div>
+            <div class="navbar-collapse collapse">
+                <ul class="nav navbar-nav">
+                    <li><a href="/Home/Index">Home</a></li>
+                    <li><a href="/Help/Index">Help</a></li>
+                    <li><a href="/WebPages/subcontas.html">Subcontas</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="container body-content">
+
+        <!-- Conteudo -->
+
+        <!-- Cabeçalho da tela -->
+        <div class="page-header">
+            <!-- Caminho do pão (breadcrumb) -->
+            <ol class="breadcrumb">
+                <li><a href="/Home/Index">Início</a></li>
+                <li class="active">Subcontas</li>
+            </ol>
+
+            <!-- Titulo da Tela-->
+            <h1>Subcontas <small>- exemplo -</small></h1>
+        </div>
+
+        <!-- Formulario principal: pesquisa + resultado -->
+        <div class="panel panel-primary">
+
+            <!-- Default panel contents -->
+            <div class="panel-heading">Informe apenas UM dos campos abaixo</div>
+            <div class="panel-body">
+
+                <form class="form-inline">
+                    <div class="form-group">
+                        <label for="inputSubconta">Subconta</label>
+                        <input type="text" class="form-control" id="inputSubconta" placeholder="__________" style="width: 120px;" maxlength="10">
+                    </div>
+                    <div class="form-group">
+                        <label for="inputProcesso">Processo</label>
+                        <input type="text" class="form-control" id="inputProcesso" placeholder="____________________" style="width: 200px;" maxlength="20">
+                    </div>
+                    <div class="form-group">
+                        <label for="inputTitular">Nome Titular</label>
+                        <input type="text" class="form-control" id="inputTitular" placeholder="Até 100 caracteres..." maxlength="100">
+                    </div>
+
+                    <button type="button" class="btn btn-primary btn-lg" aria-label="Left Align">
+                        <span class="glyphicon glyphicon-search" aria-hidden="true"></span> Pesquisar
+                    </button>
+                </form>
+
+            </div>
+            <!-- Table -->
+            <div class="well well-sm">
+                Resultado: <span class="badge">0</span> subconta(s) encontradas.
+            </div>
+            
+
+            <table class="table table-bordered table-striped table-hover">
+                <tr>
+                    <th>Nº Subconta</th>
+                    <th>Saldo</th>
+                    <th>Data Abertura</th>
+                    <th>Processo</th>
+                    <th>Titular</th>
+                </tr>
+            </table>
+
+            <nav>
+                <ul class="pager">
+                    <li><a href="#">Anterior</a></li>
+                    <li><a href="#">Próximo</a></li>
+                </ul>
+            </nav>
+        </div>
+
+
+        <!-- Rodape -->
+        <hr />
+        <footer>
+            <p>&copy; <span data-bind="text: new Date().toLocaleString()"></span> - KnockoutJS 3.3.0 + C#.NET WebApi 2 - by Leandro Almeida</p>
+        </footer>
+    </div>
+
+    <!-- Scripts/Knockout -->
+    <script src="../Scripts/jquery-2.1.4.min.js" type="text/javascript"></script>
+    <script src="../Scripts/bootstrap.min.js"></script>
+    <script src="../Scripts/knockout-3.3.0.debug.js" type="text/javascript"></script>
+
+    <script type="text/javascript">
+        function Subconta() {
+
+        }
+
+        function SubcontaViewModel() {
+
+        }
+
+        $(document).ready(function () {
+            ko.applyBindings(new SubcontaViewModel());
+        });
+    </script>
+
+</body>
+</html>
