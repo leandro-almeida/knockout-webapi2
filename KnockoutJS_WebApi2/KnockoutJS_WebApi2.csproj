@@ -267,6 +267,9 @@
     <Content Include="Scripts\numeraljs\languages\pt-br.min.js" />
     <Content Include="Scripts\numeraljs\numeral.min.js" />
     <Content Include="Scripts\waitMe.min.js" />
+    <Content Include="WebPages\koscripts\appconfig.js" />
+    <Content Include="WebPages\koscripts\kobindings.js" />
+    <Content Include="WebPages\koscripts\subconta.js" />
     <Content Include="WebPages\movimentacao.html" />
     <Content Include="WebPages\subcontas.html" />
     <Content Include="WebPages\todo_exemplo.html" />

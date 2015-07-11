@@ -20,9 +20,9 @@ namespace KnockoutJS_WebApi2.Controllers
 
         // GET: api/Movimentacao/numeroSubconta
         [HttpGet]
-        public Movimentacao Get(string pNumeroSubconta)
+        public List<Movimentacao> Get(string id)
         {
-            return MovimentacaoRepository.ObterPorSubconta(pNumeroSubconta);
+            return MovimentacaoRepository.ObterPorSubconta(id);
         }
 
         // POST: api/Movimentacao

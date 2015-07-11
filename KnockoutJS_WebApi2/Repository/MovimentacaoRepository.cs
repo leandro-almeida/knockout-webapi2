@@ -35,15 +35,10 @@ namespace KnockoutJS_WebApi2.Repository
                 ConstruirModelo();
         }
 
-        public static Movimentacao ObterPorSubconta(string pNumeroSubconta)
+        public static List<Movimentacao> ObterPorSubconta(string pNumeroSubconta)
         {
             VerificarLista();
-            if (pNumeroSubconta != null)
-            {
-                return listaMovimentacao.FirstOrDefault(f => f.numeroSubconta.Equals(pNumeroSubconta));
-            }
-
-            return new Movimentacao();
+            return listaMovimentacao.Where(f => f.numeroSubconta.Equals(pNumeroSubconta.ToString())).ToList();
         }
 
         public static void Inserir(Movimentacao pMovimentacao)
