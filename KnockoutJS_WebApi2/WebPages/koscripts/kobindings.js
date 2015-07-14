@@ -1,5 +1,5 @@
 ﻿/*
- * Script que contém Binding Handler do KnockoutJS para ser usado nas telas.
+ * Script que contém Binding Handlers do KnockoutJS para ser usado nas telas.
 */
 
 // Efeito de FadeIn/FadeOut do jQuery associado ao data-bind 'fadeVisible'
@@ -12,7 +12,7 @@ ko.bindingHandlers.fadeVisible = {
     update: function (element, valueAccessor) {
         // Whenever the value subsequently changes, slowly fade the element in or out
         var value = valueAccessor();
-        ko.unwrap(value) ? $(element).fadeIn() : $(element).fadeOut();
+        ko.unwrap(value) ? $(element).fadeIn() : $(element).fadeOut(200);
     }
 };
 

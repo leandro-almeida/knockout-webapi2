@@ -27,6 +27,27 @@ function Subconta(pSubconta) {
     });
 }
 
+function Movimentacao(pMovimentacao) {
+    var self = this;
+
+    self.numeroSequencial = ko.observable(pMovimentacao.numeroSequencial);
+    self.numeroSubconta = ko.observable(pMovimentacao.numeroSubconta);
+    self.codigoMovimentacao = ko.observable(pMovimentacao.codigoMovimentacao);
+    self.descricao = ko.observable(pMovimentacao.descricao);
+    self.data = ko.observable(pMovimentacao.data);
+    self.valor = ko.observable(pMovimentacao.valor);
+    self.usuario = ko.observable(pMovimentacao.usuario);
+    self.complemento = ko.observable(pMovimentacao.complemento);
+
+    self.dataFormatada = ko.computed(function () {
+        return new Date(self.data()).toLocaleString();
+    });
+
+    self.valorFormatado = ko.computed(function () {
+        return numeral(self.valor()).format('$0,0.00');
+    });
+}
+
 /*
 * Objeto que representa o View-Model desta tela.
 */
@@ -63,6 +84,7 @@ function SubcontaViewModel() {
                 data: {},
                 beforeSend: function () {
                     self.boolExibirPainelResultado(false);
+                    self.subcontaSelecionada('');
                     self.listaSubcontas([]);
                 },
 
@@ -104,18 +126,20 @@ function SubcontaViewModel() {
                 success: function (data) {
                     console.log(data);
 
-                    /*
                     var mappedData = ko.utils.arrayMap(data, function (item) {
-                        return new Subconta(item);
+                        return new Movimentacao(item);
                     });
-                    */
 
-                    self.subcontaSelecionada(obj.numeroSubconta());
-                    self.listaMovimentacoes(data);
+                    self.listaMovimentacoes(mappedData);
                 },
 
                 complete: function () {
                     self.boolExibirPainelResultado(true);
+                    self.subcontaSelecionada(obj.numeroSubconta());
+
+                    $('html, body').animate({
+                        scrollTop: $("#divMovimentacoes").offset().top
+                    }, 2000);
                 }
             });
     };

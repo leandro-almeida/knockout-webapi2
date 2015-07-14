@@ -20,7 +20,7 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a href="/Home/Index" class="navbar-brand">SDJ Gestor</a>
+                <a href="/Home/Index" class="navbar-brand">SDJ Gestor <i class="fa fa-bank fa-lg"></i></a>
             </div>
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
@@ -85,6 +85,7 @@
                     <span class="badge badge-info" data-bind="text: listaSubcontas().length"></span> <small>subconta(s) encontradas.</small>
                 </div>
 
+                <!-- Subcontas -->
                 <table class="table table-bordered table-striped table-hover">
                     <tr>
                         <th>Nº Subconta</th>
@@ -92,7 +93,7 @@
                         <th>Data Abertura</th>
                         <th>Processo</th>
                         <th>Titular</th>
-                        <th>Ação</th>
+                        <th>Ações</th>
                     </tr>
 
                     <tbody data-bind="foreach: listaSubcontas">
@@ -102,25 +103,50 @@
                             <td data-bind="text: dataFormatada"></td>
                             <td data-bind="text: numeroProcesso"></td>
                             <td data-bind="text: titular"></td>
-                            <td><a href="#" data-bind="click: $parent.GetMovimentacoesSubconta" title="Visualizar Movimentações"><i class="fa fa-list fa-lg"></i></a></td>
+                            <td>
+                                <a href="#" data-bind="click: $parent.GetMovimentacoesSubconta" title="Visualizar Movimentações"><i class="fa fa-list fa-lg"></i></a>&nbsp;
+                                <a href="#" title="Emitir Extrato"><i class="fa fa-file-pdf-o fa-lg"></i></a>&nbsp;
+                                <a href="#" title="Emitir Guia de Depósito"><i class="fa fa-money fa-lg"></i></a>&nbsp;
+                                <a href="#" title="Emitir Novo Alvará"><i class="fa fa-gavel fa-lg"></i></a>&nbsp;
+                            </td>
                         </tr>
                     </tbody>
                 </table>
 
-                <!--
-                <nav>
-                    <ul class="pager">
-                        <li><a href="#">Anterior</a></li>
-                        <li><a href="#">Próximo</a></li>
-                    </ul>
-                </nav>
-                -->
-
-                <div data-bind="fadeVisible: isExibirPainelMovimentacao()">
+                <!-- Movimentações da Subconta -->
+                <div id="divMovimentacoes" data-bind="fadeVisible: isExibirPainelMovimentacao()">
                     <div class="alert alert-info">
-                        <strong>Subconta:</strong> <span class="badge badge-info" data-bind="text: subcontaSelecionada()"></span><br/>
+                        <strong>Subconta:</strong> <span class="badge badge-success" data-bind="text: subcontaSelecionada()"></span><br />
                         <small>Exibindo <span class="badge badge-info" data-bind="text: listaMovimentacoes().length"></span> registro(s) de movimentação.</small>
                     </div>
+
+                    <table class="table table-bordered table-striped table-hover">
+                        <tr>
+                            <th>Seq.</th>
+                            <th>Data</th>
+                            <th>Movimentação</th>
+                            <th>Valor</th>
+                            <th>Usuário</th>
+                            <th>Complemento</th>
+                            <th>Ações</th>
+                        </tr>
+
+                        <tbody data-bind="foreach: listaMovimentacoes">
+                            <tr>
+                                <td data-bind="text: numeroSequencial"></td>
+                                <td data-bind="text: dataFormatada"></td>
+                                <td data-bind="text: descricao"></td>
+                                <td data-bind="text: valorFormatado"></td>
+                                <td data-bind="text: usuario"></td>
+                                <td data-bind="text: complemento"></td>
+                                <td>
+                                    <a href="#" data-bind="visible: $data.codigoMovimentacao() == 1" title="Emitir Comprovante de Abertura de Subconta"><i class="fa fa-file-pdf-o fa-lg"></i></a>
+                                    <a href="#" data-bind="visible: $data.codigoMovimentacao() == 3" title="Reimprimir Guia de Depósito"><i class="fa fa-barcode fa-lg"></i></a>
+                                    <a href="#" data-bind="visible: $data.codigoMovimentacao() == 4 || $data.codigoMovimentacao() == 7" title="Reimprimir Alvará"><i class="fa fa-file-text-o fa-lg"></i></a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
 
             </div> <!-- fim if -->
