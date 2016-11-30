@@ -1,2 +1,2 @@
 # knockout-webapi2
-Exemplo de Aplicação Web com KnockoutJS  + C#.NET Web Api 2
+KnockoutJS + C#.NET WebApi2 Sample Application
